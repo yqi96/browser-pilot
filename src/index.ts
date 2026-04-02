@@ -16,7 +16,10 @@
  *   BROWSER_MCP_USER_DATA_DIR Chrome user data dir (optional)
  */
 
+import fs from "node:fs/promises";
 import net from "node:net";
+import os from "node:os";
+import path from "node:path";
 import { spawn } from "node:child_process";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
@@ -168,9 +171,37 @@ async function main(): Promise<void> {
   server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools }));
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    const toolArgs = (request.params.arguments as Record<string, unknown>) ?? {};
+
+    // Intercept take_screenshot: inject a temp filePath, then return the image
+    // as base64 content so Claude can see it directly (multimodal).
+    if (request.params.name === "take_screenshot") {
+      const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "browser-mcp-"));
+      const format = (toolArgs["format"] as string | undefined) ?? "png";
+      const filePath = path.join(tmpDir, `screenshot.${format}`);
+      try {
+        await upstream.callTool({
+          name: "take_screenshot",
+          arguments: { ...toolArgs, filePath },
+        });
+        const buf = await fs.readFile(filePath);
+        return {
+          content: [
+            {
+              type: "image",
+              data: buf.toString("base64"),
+              mimeType: format === "jpeg" ? "image/jpeg" : "image/png",
+            },
+          ],
+        };
+      } finally {
+        await fs.rm(tmpDir, { recursive: true, force: true }).catch(() => {});
+      }
+    }
+
     return await upstream.callTool({
       name: request.params.name,
-      arguments: (request.params.arguments as Record<string, unknown>) ?? {},
+      arguments: toolArgs,
     });
   });
 
