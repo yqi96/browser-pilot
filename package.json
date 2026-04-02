@@ -1,0 +1,21 @@
+{
+  "name": "claude-browser-mcp",
+  "version": "1.0.0",
+  "description": "MCP server that wraps chrome-devtools-mcp with auto Chrome launch",
+  "type": "module",
+  "bin": {
+    "claude-browser-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "node --loader ts-node/esm src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.28.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "^5.8.3"
+  }
+}
