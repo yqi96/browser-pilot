@@ -1,9 +1,11 @@
 {
-  "name": "claude-browser-mcp",
+  "name": "browser-mcp",
   "version": "1.0.0",
   "description": "MCP server that wraps chrome-devtools-mcp with auto Chrome launch",
   "type": "module",
   "bin": {
+    "browser-mcp": "./dist/index.js",
+    "codex-browser-mcp": "./dist/index.js",
     "claude-browser-mcp": "./dist/index.js"
   },
   "scripts": {
