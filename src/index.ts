@@ -83,20 +83,17 @@ function hasDisplay(): boolean {
 
 function launchChrome(port: number, userDataDir?: string): void {
   const exe = CHROME_EXECUTABLES[process.platform] ?? "google-chrome";
+  // Chrome remote debugging requires a non-default user-data-dir
+  const dataDir = userDataDir ?? path.join(os.tmpdir(), "claude-browser-mcp-profile");
   const chromeArgs = [
     `--remote-debugging-port=${port}`,
     "--no-first-run",
     "--no-default-browser-check",
+    `--user-data-dir=${dataDir}`,
   ];
-  if (hasDisplay()) {
-    // Visible window — allows human interaction (login, CAPTCHA, 2FA, etc.)
-    chromeArgs.push("--new-window");
-  } else {
+  if (!hasDisplay()) {
     // No display available, fall back to headless
     chromeArgs.push("--headless=new", "--no-sandbox");
-  }
-  if (userDataDir) {
-    chromeArgs.push(`--user-data-dir=${userDataDir}`);
   }
   // Detach so Chrome outlives this process
   spawn(exe, chromeArgs, { detached: true, stdio: "ignore" }).unref();
