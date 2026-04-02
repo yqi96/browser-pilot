@@ -73,15 +73,28 @@ const CHROME_EXECUTABLES: Partial<Record<NodeJS.Platform, string>> = {
   win32: "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
 };
 
+function hasDisplay(): boolean {
+  // On Linux, check DISPLAY; on macOS/Windows a display is always available.
+  if (process.platform === "linux") {
+    return Boolean(process.env["DISPLAY"] || process.env["WAYLAND_DISPLAY"]);
+  }
+  return true;
+}
+
 function launchChrome(port: number, userDataDir?: string): void {
   const exe = CHROME_EXECUTABLES[process.platform] ?? "google-chrome";
   const chromeArgs = [
     `--remote-debugging-port=${port}`,
     "--no-first-run",
     "--no-default-browser-check",
-    "--headless=new",
-    "--no-sandbox",
   ];
+  if (hasDisplay()) {
+    // Visible window — allows human interaction (login, CAPTCHA, 2FA, etc.)
+    chromeArgs.push("--new-window");
+  } else {
+    // No display available, fall back to headless
+    chromeArgs.push("--headless=new", "--no-sandbox");
+  }
   if (userDataDir) {
     chromeArgs.push(`--user-data-dir=${userDataDir}`);
   }
