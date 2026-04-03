@@ -1,171 +1,78 @@
-# browser-mcp
+# browser-pilot
 
-`browser-mcp` is a thin MCP proxy around [`chrome-devtools-mcp`](https://www.npmjs.com/package/chrome-devtools-mcp).
-It lets Codex CLI and Claude Code drive a real Chrome instance through MCP tools.
+Browser MCP server for AI agents. Wraps [chrome-devtools-mcp](https://github.com/mrexodia/chrome-devtools-mcp) with automatic Chrome lifecycle management.
 
-```
-Codex / Claude Code <-> browser-mcp (stdio) <-> chrome-devtools-mcp (stdio) <-> Chrome DevTools Protocol
-```
+## Features
 
-## Highlights
+- Auto-launches Chrome (macOS/Linux/Windows)
+- Exposes `browser_open` / `browser_close` lifecycle tools
+- Proxies all chrome-devtools-mcp tools transparently
+- Screenshots returned as base64 for multimodal AI
 
-- Exposes full browser tool schemas immediately on startup (no browser required for `list_tools`)
-- Adds explicit lifecycle tools:
-  - `browser_open`: launch/connect browser
-  - `browser_close`: disconnect and close auto-launched browser
-- Proxies all upstream `chrome-devtools-mcp` tools
-- Enhances `take_screenshot` by returning image content directly to the MCP host
-- Supports auto-launch with isolated user data directories
-
-## Requirements
-
-- Node.js 18+
-- Google Chrome / Chromium
-- [Codex CLI](https://github.com/openai/codex) and/or [Claude Code](https://claude.ai/code)
-
-## Install
+## Quick Install
 
 ```bash
-git clone <your-repo-url>
-cd browser-mcp
-npm install
-npm run build
+npx browser-pilot-install
+# or for a specific client:
+npx browser-pilot-install --client claude
+npx browser-pilot-install --client codex
+npx browser-pilot-install --client gemini
 ```
 
-Optional global install:
+## Supported Clients
+
+| Client | Status | Skill trigger |
+|--------|--------|---------------|
+| Claude Code | Supported | `/browser` |
+| Codex CLI | Supported | `$browser` |
+| Gemini CLI | Best-effort | `activate_skill("browser")` |
+
+## Uninstall
 
 ```bash
-npm install -g .
+node dist/uninstall.js --client all
 ```
 
-## Quick Start
-
-Run with auto-launch:
+## Manual Setup (git clone)
 
 ```bash
-node dist/index.js --launch
+git clone https://github.com/YOUR_USER/browser-pilot
+cd browser-pilot
+./install.sh                          # installs for all detected clients
+TARGET_CLIENT=claude ./install.sh     # claude only
 ```
 
-Then in your MCP client:
+## MCP Server Configuration
 
-1. Call `browser_open`
-2. Use `mcp__browser__*` tools (`new_page`, `navigate_page`, `take_snapshot`, etc.)
-3. Call `browser_close` when finished
+The MCP server command is: `npx browser-pilot --launch`
 
-If you call a browser tool before `browser_open`, the server returns:
-`Browser is not open. Call browser_open first.`
+Or manually add to your client config:
 
-## CLI Flags and Environment Variables
+- **Claude Code**: `claude mcp add browser --scope user --transport stdio -- npx browser-pilot --launch`
+- **Codex**: `codex mcp add browser -- npx browser-pilot --launch`
 
-| Flag | Env var | Default | Description |
-|------|---------|---------|-------------|
-| `--port <n>` | `BROWSER_MCP_PORT` | `9222` | Preferred Chrome debug port |
-| `--launch` | `BROWSER_MCP_AUTO_LAUNCH=1` | off | Auto-launch Chrome if port is unavailable |
-| `--user-data-dir <path>` | `BROWSER_MCP_USER_DATA_DIR` | temp profile | Chrome profile directory |
+## Configuration
 
-Port behavior with `--launch`:
+| Flag | Env | Default | Description |
+|------|-----|---------|-------------|
+| `--port N` | `BROWSER_MCP_PORT` | auto | Chrome remote debugging port |
+| `--launch` | `BROWSER_MCP_AUTO_LAUNCH=1` | off | Auto-launch Chrome on start |
+| `--user-data-dir PATH` | `BROWSER_MCP_USER_DATA_DIR` | temp | Chrome user data directory |
 
-- If `--port` (or `BROWSER_MCP_PORT`) is explicitly set, that port is used.
-- If no explicit port is set, browser-mcp finds a free local port to avoid conflicts (useful for multiple sessions).
+## Usage
 
-## Connect to Codex CLI
-
-```bash
-codex mcp add browser -- node /absolute/path/to/browser-mcp/dist/index.js --launch
-```
-
-Or add manually in `~/.codex/config.toml`:
-
-```toml
-[mcp_servers.browser]
-command = "node"
-args = ["/absolute/path/to/browser-mcp/dist/index.js", "--launch"]
-enabled = true
-```
-
-## Connect to Claude Code
-
-```bash
-claude mcp add browser --scope user --transport stdio -- node /absolute/path/to/browser-mcp/dist/index.js --launch
-```
-
-Install the `/browser` command:
-
-```bash
-cp skills/browser.md ~/.claude/commands/browser.md
-```
-
-## One-Command Installer
-
-`install.sh` builds, registers MCP server, and installs skill/command helpers.
-
-```bash
-# Both Codex + Claude Code (default)
-./install.sh
-
-# Codex only
-TARGET_CLIENT=codex ./install.sh
-
-# Claude Code only
-TARGET_CLIENT=claude ./install.sh
-```
-
-Optional environment overrides:
-
-- `MCP_NAME` (default `browser`)
-- `SKILL_NAME` (default `browser`)
-- `TARGET_CLIENT` (`codex|claude|both`)
-
-## Tool Surface
-
-`browser-mcp` exposes:
-
-- `browser_open`
-- `browser_close`
-- Full upstream `chrome-devtools-mcp` tools (for example: `list_pages`, `new_page`, `navigate_page`, `take_snapshot`, `take_screenshot`, `click`, `fill`, `evaluate_script`, `wait_for`, etc.)
-
-Notes:
-
-- Upstream tools are schema-probed at startup via a lightweight process using a dummy browser URL, so your model can see tool definitions before Chrome is opened.
-- `take_screenshot` is intercepted to return image content directly to the MCP host (instead of only writing a file).
-
-## Manual Chrome Mode
-
-If you do not use `--launch`, start Chrome yourself with remote debugging first:
-
-```bash
-# macOS
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-  --remote-debugging-port=9222 --no-first-run
-
-# Linux
-google-chrome --remote-debugging-port=9222 --no-first-run
-
-# Windows
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
-```
-
-Then start server:
-
-```bash
-node dist/index.js --port 9222
-```
-
-## Linux Display Fallback
-
-On Linux auto-launch:
-
-- If an X11/Wayland display is available, Chrome is launched normally.
-- If no display is detected, Chrome is launched in headless mode.
+1. Open browser: use `mcp__browser__browser_open` tool
+2. Use any `mcp__browser__*` tools (navigate, click, screenshot, etc.)
+3. Close browser: use `mcp__browser__browser_close` tool
 
 ## Development
 
 ```bash
-# Build
+git clone https://github.com/YOUR_USER/browser-pilot
+cd browser-pilot
+npm install
 npm run build
-
-# Dev mode
-npm run dev -- --launch
+npm run dev  # runs with ts-node
 ```
 
 ## License
