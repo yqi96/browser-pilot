@@ -101,6 +101,19 @@ Claude Code / Codex / Gemini
      Chrome
 ```
 
+## Contributing
+
+Found a bug? If you have Claude Code installed, you can fix it yourself:
+
+```bash
+git clone https://github.com/yqi96/browser-pilot
+cd browser-pilot
+# Describe the bug to Claude Code and let it fix it
+claude
+```
+
+PRs are welcome! Feel free to open issues or submit pull requests on [GitHub](https://github.com/yqi96/browser-pilot).
+
 ## License
 
 MIT
