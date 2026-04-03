@@ -2,7 +2,7 @@
 
 > Give AI agents a real browser. One command to install.
 
-A lightweight MCP server that wraps [chrome-devtools-mcp](https://github.com/mrexodia/chrome-devtools-mcp) with automatic Chrome lifecycle management — works with Claude Code, Codex CLI, and Gemini CLI out of the box.
+A lightweight MCP server that wraps [chrome-devtools-mcp](https://developer.chrome.com/blog/chrome-devtools-mcp) with automatic Chrome lifecycle management — works with Claude Code, Codex CLI, and Gemini CLI out of the box.
 
 ## Install
 
