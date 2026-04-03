@@ -36,7 +36,7 @@ node dist/uninstall.js --client all
 ## Manual Setup (git clone)
 
 ```bash
-git clone https://github.com/YOUR_USER/browser-pilot
+git clone https://github.com/yqi96/browser-pilot
 cd browser-pilot
 ./install.sh                          # installs for all detected clients
 TARGET_CLIENT=claude ./install.sh     # claude only
@@ -68,7 +68,7 @@ Or manually add to your client config:
 ## Development
 
 ```bash
-git clone https://github.com/YOUR_USER/browser-pilot
+git clone https://github.com/yqi96/browser-pilot
 cd browser-pilot
 npm install
 npm run build
