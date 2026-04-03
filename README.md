@@ -4,6 +4,14 @@
 
 A lightweight MCP server that wraps [chrome-devtools-mcp](https://developer.chrome.com/blog/chrome-devtools-mcp) with automatic Chrome lifecycle management — works with Claude Code, Codex CLI, and Gemini CLI out of the box.
 
+## What can you do with it?
+
+- **Deep web research** — crawl multi-page sites, extract structured data, summarize articles, compare prices across tabs
+- **Form automation** — fill and submit forms, upload files, interact with SPAs and dynamic content
+- **Human-in-the-loop** — AI handles the tedious parts, pauses when a CAPTCHA or login appears, you solve it, AI continues
+- **Screenshot & visual analysis** — capture pages and let the AI reason about layout, content, or visual changes
+- **Scraping without APIs** — access any site a human can open, no API key required
+
 ![demo](assets/demo.png)
 
 ## Install
