@@ -1,5 +1,5 @@
 {
-  "name": "browser-pilot",
+  "name": "@yqi96/browser-pilot",
   "version": "1.0.0",
   "description": "Browser MCP server for AI agents — auto-launches Chrome, proxies chrome-devtools-mcp tools",
   "type": "module",
