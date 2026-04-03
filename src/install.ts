@@ -66,6 +66,32 @@ function installClaude(): void {
 }
 
 // ── Codex ───────────────────────────────────────────────────────────────────
+
+/** Remove all [mcp_servers.browser] sections from config.toml directly,
+ *  bypassing `codex mcp remove` which itself fails on duplicate keys. */
+function cleanCodexConfig(mcpName: string): void {
+  const configPath = path.join(homeDir, '.codex', 'config.toml');
+  if (!fs.existsSync(configPath)) return;
+
+  const lines = fs.readFileSync(configPath, 'utf8').split('\n');
+  const sectionHeader = `[mcp_servers.${mcpName}]`;
+  const filtered: string[] = [];
+  let skip = false;
+
+  for (const line of lines) {
+    if (line.trim() === sectionHeader) {
+      skip = true; // start skipping this section
+      continue;
+    }
+    if (skip && line.trim().startsWith('[')) {
+      skip = false; // new section starts — stop skipping
+    }
+    if (!skip) filtered.push(line);
+  }
+
+  fs.writeFileSync(configPath, filtered.join('\n'), 'utf8');
+}
+
 function installCodex(): void {
   if (!hasCommand('codex')) {
     console.log(yellow('  ⚠ codex CLI not found — skipping'));
@@ -73,9 +99,7 @@ function installCodex(): void {
     return;
   }
   try {
-    try {
-      execSync('codex mcp remove browser', { stdio: 'pipe' });
-    } catch { /* ignore */ }
+    cleanCodexConfig('browser');
 
     execSync('codex mcp add browser -- npx browser-pilot --launch', { stdio: 'inherit' });
 
