@@ -55,7 +55,7 @@ function installClaude(): void {
 
     const commandsDir = path.join(homeDir, '.claude', 'commands');
     fs.mkdirSync(commandsDir, { recursive: true });
-    fs.copyFileSync(path.join(skillsDir, 'browser.md'), path.join(commandsDir, 'browser.md'));
+    fs.copyFileSync(path.join(skillsDir, 'browser', 'SKILL.md'), path.join(commandsDir, 'browser.md'));
 
     console.log(green('  ✓ claude — MCP server registered + skill copied'));
     results['claude'] = true;

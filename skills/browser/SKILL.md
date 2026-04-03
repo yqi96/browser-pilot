@@ -28,7 +28,7 @@ Never fabricate or guess URLs. Always:
 3. Call `mcp__browser__click(uid="X_Y")`.
 
 ### Reading page content
-- Visual check: `mcp__browser__take_screenshot` (preferred for Gemini's multimodal capabilities)
+- Visual check: `mcp__browser__take_screenshot` (preferred for AI multimodal capabilities)
 - Structure and links: `mcp__browser__take_snapshot`
 
 ### Filling forms
