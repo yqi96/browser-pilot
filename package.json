@@ -1,11 +1,12 @@
 {
   "name": "@yqi96/browser-pilot",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Browser MCP server for AI agents — auto-launches Chrome, proxies chrome-devtools-mcp tools",
   "type": "module",
   "bin": {
     "browser-pilot": "dist/index.js",
-    "browser-pilot-install": "dist/install.js"
+    "browser-pilot-install": "dist/install.js",
+    "browser-pilot-uninstall": "dist/uninstall.js"
   },
   "scripts": {
     "build": "tsc",
@@ -16,6 +17,7 @@
   "files": [
     "dist",
     "skills",
+    "assets",
     "install.sh"
   ],
   "dependencies": {
