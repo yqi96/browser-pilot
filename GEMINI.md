@@ -1,4 +1,4 @@
-# browser-mcp
+# browser-pilot
 
 A thin MCP server that wraps `chrome-devtools-mcp` with auto-launch capabilities. It allows AI agents to control a real Chrome browser via the Model Context Protocol.
 
@@ -17,7 +17,7 @@ npm run build
 ### Integration with Gemini CLI
 To register this MCP server with Gemini CLI:
 ```bash
-gemini mcp add browser --scope user -- node $(pwd)/dist/index.js --launch
+gemini mcp add browser --scope user -- npx browser-pilot --launch
 ```
 
 To install the browser skill:

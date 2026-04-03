@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * browser-mcp
+ * browser-pilot
  *
  * A thin MCP server that:
  *  1. Optionally auto-launches Chrome with remote debugging
@@ -11,9 +11,9 @@
  *   node dist/index.js [--port 9222] [--launch] [--user-data-dir <path>]
  *
  * Env vars:
- *   BROWSER_MCP_PORT          CDP port (default: 9222, ignored when auto-launching without --port)
- *   BROWSER_MCP_AUTO_LAUNCH   Set to "1" to auto-launch Chrome
- *   BROWSER_MCP_USER_DATA_DIR Chrome user data dir (optional)
+ *   BROWSER_PILOT_PORT          CDP port (default: 9222, ignored when auto-launching without --port)
+ *   BROWSER_PILOT_AUTO_LAUNCH   Set to "1" to auto-launch Chrome
+ *   BROWSER_PILOT_USER_DATA_DIR Chrome user data dir (optional)
  */
 
 import fs from "node:fs/promises";
@@ -42,12 +42,12 @@ function flagValue(flag: string): string | undefined {
   return idx !== -1 ? args[idx + 1] : undefined;
 }
 
-const EXPLICIT_PORT = flagValue("--port") !== undefined || process.env["BROWSER_MCP_PORT"] !== undefined;
-const CDP_PORT = Number(flagValue("--port") ?? process.env["BROWSER_MCP_PORT"] ?? 9222);
+const EXPLICIT_PORT = flagValue("--port") !== undefined || process.env["BROWSER_PILOT_PORT"] !== undefined;
+const CDP_PORT = Number(flagValue("--port") ?? process.env["BROWSER_PILOT_PORT"] ?? 9222);
 const AUTO_LAUNCH =
-  args.includes("--launch") || process.env["BROWSER_MCP_AUTO_LAUNCH"] === "1";
+  args.includes("--launch") || process.env["BROWSER_PILOT_AUTO_LAUNCH"] === "1";
 const USER_DATA_DIR =
-  flagValue("--user-data-dir") ?? process.env["BROWSER_MCP_USER_DATA_DIR"];
+  flagValue("--user-data-dir") ?? process.env["BROWSER_PILOT_USER_DATA_DIR"];
 
 // ---------------------------------------------------------------------------
 // Chrome helpers
@@ -113,7 +113,7 @@ let launchedChromePid: number | undefined;
 
 function launchChrome(port: number, userDataDir?: string): void {
   const exe = CHROME_EXECUTABLES[process.platform] ?? "google-chrome";
-  const dataDir = userDataDir ?? path.join(os.tmpdir(), `browser-mcp-profile-${port}`);
+  const dataDir = userDataDir ?? path.join(os.tmpdir(), `browser-pilot-profile-${port}`);
   const chromeArgs = [
     `--remote-debugging-port=${port}`,
     "--no-first-run",
@@ -203,7 +203,7 @@ async function createUpstreamClient(port: number, userDataDir?: string): Promise
     stderr: "pipe",
   });
 
-  const client = new Client({ name: "browser-mcp-proxy", version: "1.0.0" }, {});
+  const client = new Client({ name: "browser-pilot-proxy", version: "1.0.0" }, {});
   await client.connect(transport);
 
   // Verify the expected tool surface is available
@@ -248,7 +248,7 @@ async function probeUpstreamSchemas(): Promise<unknown[]> {
     args: ["-y", "chrome-devtools-mcp@latest", "--browserUrl", "http://127.0.0.1:1"],
     stderr: "pipe",
   });
-  const client = new Client({ name: "browser-mcp-probe", version: "1.0.0" }, {});
+  const client = new Client({ name: "browser-pilot-probe", version: "1.0.0" }, {});
   try {
     await client.connect(transport);
     const { tools } = await client.listTools();
@@ -287,7 +287,7 @@ async function main(): Promise<void> {
   }
 
   const server = new Server(
-    { name: "browser-mcp", version: "1.0.0" },
+    { name: "browser-pilot", version: "1.0.0" },
     { capabilities: { tools: {} } },
   );
 
@@ -325,7 +325,7 @@ async function main(): Promise<void> {
     // Intercept take_screenshot: inject a temp filePath, then return the image
     // as base64 content so Claude can see it directly (multimodal).
     if (request.params.name === "take_screenshot") {
-      const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "browser-mcp-"));
+      const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "browser-pilot-"));
       const format = (toolArgs["format"] as string | undefined) ?? "png";
       const filePath = path.join(tmpDir, `screenshot.${format}`);
       try {
@@ -381,6 +381,6 @@ async function main(): Promise<void> {
 }
 
 main().catch((err: unknown) => {
-  process.stderr.write(`[browser-mcp] fatal: ${String(err)}\n`);
+  process.stderr.write(`[browser-pilot] fatal: ${String(err)}\n`);
   process.exit(1);
 });

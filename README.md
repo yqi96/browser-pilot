@@ -52,9 +52,9 @@ Or use the `/browser` skill in Claude Code for guided automation.
 
 | Flag | Env var | Default | Description |
 |------|---------|---------|-------------|
-| `--port N` | `BROWSER_MCP_PORT` | auto | Chrome remote debugging port |
-| `--launch` | `BROWSER_MCP_AUTO_LAUNCH=1` | off | Auto-launch Chrome on start |
-| `--user-data-dir PATH` | `BROWSER_MCP_USER_DATA_DIR` | temp dir | Chrome profile directory |
+| `--port N` | `BROWSER_PILOT_PORT` | auto | Chrome remote debugging port |
+| `--launch` | `BROWSER_PILOT_AUTO_LAUNCH=1` | off | Auto-launch Chrome on start |
+| `--user-data-dir PATH` | `BROWSER_PILOT_USER_DATA_DIR` | temp dir | Chrome profile directory |
 
 ## Manual registration
 
