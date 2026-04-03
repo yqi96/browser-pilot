@@ -1,69 +1,80 @@
 # browser-pilot
 
-Browser MCP server for AI agents. Wraps [chrome-devtools-mcp](https://github.com/mrexodia/chrome-devtools-mcp) with automatic Chrome lifecycle management.
+> Give AI agents a real browser. One command to install.
 
-## Features
+A lightweight MCP server that wraps [chrome-devtools-mcp](https://github.com/mrexodia/chrome-devtools-mcp) with automatic Chrome lifecycle management — works with Claude Code, Codex CLI, and Gemini CLI out of the box.
 
-- Auto-launches Chrome (macOS/Linux/Windows)
-- Exposes `browser_open` / `browser_close` lifecycle tools
-- Proxies all chrome-devtools-mcp tools transparently
-- Screenshots returned as base64 for multimodal AI
-
-## Quick Install
+## Install
 
 ```bash
 npx browser-pilot-install
-# or for a specific client:
+```
+
+Detects which AI clients you have installed and registers itself automatically.
+
+```bash
+# Target a specific client
 npx browser-pilot-install --client claude
 npx browser-pilot-install --client codex
 npx browser-pilot-install --client gemini
 ```
 
-## Supported Clients
+## What it does
 
-| Client | Status | Skill trigger |
+- **Auto-launches Chrome** on first use (macOS / Linux / Windows)
+- **Adds lifecycle tools** — `browser_open`, `browser_close`
+- **Proxies all chrome-devtools-mcp tools** transparently (navigate, click, screenshot, fill forms, …)
+- **Returns screenshots as base64** for direct multimodal AI processing
+
+## Supported clients
+
+| Client | Status | Skill command |
 |--------|--------|---------------|
-| Claude Code | Supported | `/browser` |
-| Codex CLI | Supported | `$browser` |
-| Gemini CLI | Best-effort | `activate_skill("browser")` |
+| Claude Code | ✅ Supported | `/browser` |
+| Codex CLI | ✅ Supported | `$browser` |
+| Gemini CLI | ⚡ Best-effort | `activate_skill("browser")` |
+
+## Usage
+
+Once installed, your AI client gains `mcp__browser__*` tools:
+
+```
+1. mcp__browser__browser_open    — launch Chrome
+2. mcp__browser__navigate_page   — go to a URL
+3. mcp__browser__take_snapshot   — read page content
+4. mcp__browser__click / fill / press_key / ...
+5. mcp__browser__browser_close   — clean up
+```
+
+Or use the `/browser` skill in Claude Code for guided automation.
+
+## Configuration
+
+| Flag | Env var | Default | Description |
+|------|---------|---------|-------------|
+| `--port N` | `BROWSER_MCP_PORT` | auto | Chrome remote debugging port |
+| `--launch` | `BROWSER_MCP_AUTO_LAUNCH=1` | off | Auto-launch Chrome on start |
+| `--user-data-dir PATH` | `BROWSER_MCP_USER_DATA_DIR` | temp dir | Chrome profile directory |
+
+## Manual registration
+
+```bash
+# Claude Code
+claude mcp add browser --scope user --transport stdio -- npx browser-pilot --launch
+
+# Codex
+codex mcp add browser -- npx browser-pilot --launch
+```
 
 ## Uninstall
 
 ```bash
+npx browser-pilot-install --client all  # re-run install.ts uninstall path
+# or clone and run directly:
+git clone https://github.com/yqi96/browser-pilot && cd browser-pilot
+npm install && npm run build
 node dist/uninstall.js --client all
 ```
-
-## Manual Setup (git clone)
-
-```bash
-git clone https://github.com/yqi96/browser-pilot
-cd browser-pilot
-./install.sh                          # installs for all detected clients
-TARGET_CLIENT=claude ./install.sh     # claude only
-```
-
-## MCP Server Configuration
-
-The MCP server command is: `npx browser-pilot --launch`
-
-Or manually add to your client config:
-
-- **Claude Code**: `claude mcp add browser --scope user --transport stdio -- npx browser-pilot --launch`
-- **Codex**: `codex mcp add browser -- npx browser-pilot --launch`
-
-## Configuration
-
-| Flag | Env | Default | Description |
-|------|-----|---------|-------------|
-| `--port N` | `BROWSER_MCP_PORT` | auto | Chrome remote debugging port |
-| `--launch` | `BROWSER_MCP_AUTO_LAUNCH=1` | off | Auto-launch Chrome on start |
-| `--user-data-dir PATH` | `BROWSER_MCP_USER_DATA_DIR` | temp | Chrome user data directory |
-
-## Usage
-
-1. Open browser: use `mcp__browser__browser_open` tool
-2. Use any `mcp__browser__*` tools (navigate, click, screenshot, etc.)
-3. Close browser: use `mcp__browser__browser_close` tool
 
 ## Development
 
@@ -72,7 +83,24 @@ git clone https://github.com/yqi96/browser-pilot
 cd browser-pilot
 npm install
 npm run build
-npm run dev  # runs with ts-node
+npm run dev       # ts-node hot reload
+./install.sh      # install for all detected clients
+```
+
+## Architecture
+
+```
+Claude Code / Codex / Gemini
+        │ stdio (MCP)
+        ▼
+  browser-pilot          ← this project
+  (lifecycle + proxy)
+        │ stdio (MCP)
+        ▼
+  chrome-devtools-mcp
+        │ CDP
+        ▼
+     Chrome
 ```
 
 ## License
