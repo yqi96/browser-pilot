@@ -36,83 +36,21 @@ npx --package=@yqi96/browser-pilot browser-pilot-install --client gemini
 | Codex CLI | ✅ Supported | `$browser` |
 | Gemini CLI | ⚡ Best-effort | `activate_skill("browser")` |
 
-## Usage
-
-Once installed, your AI client gains `mcp__browser__*` tools:
-
-```
-1. mcp__browser__browser_open    — launch Chrome
-2. mcp__browser__navigate_page   — go to a URL
-3. mcp__browser__take_snapshot   — read page content
-4. mcp__browser__click / fill / press_key / ...
-5. mcp__browser__browser_close   — clean up
-```
-
-Or use the `/browser` skill in Claude Code for guided automation.
-
-## Configuration
-
-| Flag | Env var | Default | Description |
-|------|---------|---------|-------------|
-| `--port N` | `BROWSER_PILOT_PORT` | auto | Chrome remote debugging port |
-| `--launch` | `BROWSER_PILOT_AUTO_LAUNCH=1` | off | Auto-launch Chrome on start |
-| `--user-data-dir PATH` | `BROWSER_PILOT_USER_DATA_DIR` | temp dir | Chrome profile directory |
-
-## Manual registration
-
-```bash
-# Claude Code
-claude mcp add browser --scope user --transport stdio -- npx browser-pilot --launch
-
-# Codex
-codex mcp add browser -- npx browser-pilot --launch
-```
-
 ## Uninstall
 
 ```bash
 npx --package=@yqi96/browser-pilot browser-pilot-uninstall
 ```
 
-## Development
-
-```bash
-git clone https://github.com/yqi96/browser-pilot
-cd browser-pilot
-npm install
-npm run build
-npm run dev       # ts-node hot reload
-./install.sh      # install for all detected clients
-```
-
-## Architecture
-
-```
-Claude Code / Codex / Gemini
-        │ stdio (MCP)
-        ▼
-  browser-pilot          ← this project
-  (lifecycle + proxy)
-        │ stdio (MCP)
-        ▼
-  chrome-devtools-mcp
-        │ CDP
-        ▼
-     Chrome
-```
-
 ## Contributing
 
-Found a bug? If you have Claude Code installed, you can fix it yourself:
+Found a bug? Open an issue or, if you have Claude Code, clone the repo and let it fix it:
 
 ```bash
-git clone https://github.com/yqi96/browser-pilot
-cd browser-pilot
-# Describe the bug to Claude Code and let it fix it
-claude
+git clone https://github.com/yqi96/browser-pilot && cd browser-pilot && claude
 ```
 
-PRs are welcome! Feel free to open issues or submit pull requests on [GitHub](https://github.com/yqi96/browser-pilot).
+PRs are welcome!
 
 ## License
 
