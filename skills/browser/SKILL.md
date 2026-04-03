@@ -7,6 +7,8 @@ description: Operate a real browser via mcp__browser__* tools safely and determi
 
 You are operating a real Chrome browser via the `mcp__browser__*` tools. Follow these rules strictly.
 
+> **CRITICAL**: `mcp__browser__*` are MCP tools, NOT bash commands. Never use `which`, `command -v`, or any shell check to test their availability. Call them directly.
+
 ## Core Workflow
 
 ### 0. Opening the browser
