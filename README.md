@@ -9,16 +9,16 @@ A lightweight MCP server that wraps [chrome-devtools-mcp](https://developer.chro
 ## Install
 
 ```bash
-npx --package=@yqi96/browser-pilot browser-pilot-install
+npx --package=@yqi96/browser-pilot@latest browser-pilot-install
 ```
 
 Detects which AI clients you have installed and registers itself automatically.
 
 ```bash
 # Target a specific client
-npx --package=@yqi96/browser-pilot browser-pilot-install --client claude
-npx --package=@yqi96/browser-pilot browser-pilot-install --client codex
-npx --package=@yqi96/browser-pilot browser-pilot-install --client gemini
+npx --package=@yqi96/browser-pilot@latest browser-pilot-install --client claude
+npx --package=@yqi96/browser-pilot@latest browser-pilot-install --client codex
+npx --package=@yqi96/browser-pilot@latest browser-pilot-install --client gemini
 ```
 
 ## What it does
@@ -39,7 +39,7 @@ npx --package=@yqi96/browser-pilot browser-pilot-install --client gemini
 ## Uninstall
 
 ```bash
-npx --package=@yqi96/browser-pilot browser-pilot-uninstall
+npx --package=@yqi96/browser-pilot@latest browser-pilot-uninstall
 ```
 
 ## Contributing

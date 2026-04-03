@@ -49,7 +49,7 @@ function installClaude(): void {
     } catch { /* ignore */ }
 
     execSync(
-      'claude mcp add browser --scope user --transport stdio -- npx --package=@yqi96/browser-pilot browser-pilot --launch',
+      'claude mcp add browser --scope user --transport stdio -- npx --package=@yqi96/browser-pilot@latest browser-pilot --launch',
       { stdio: 'inherit' }
     );
 
@@ -101,7 +101,7 @@ function installCodex(): void {
   try {
     cleanCodexConfig('browser');
 
-    execSync('codex mcp add browser -- npx --package=@yqi96/browser-pilot browser-pilot --launch', { stdio: 'inherit' });
+    execSync('codex mcp add browser -- npx --package=@yqi96/browser-pilot@latest browser-pilot --launch', { stdio: 'inherit' });
 
     const skillDir = path.join(homeDir, '.codex', 'skills', 'browser');
     fs.mkdirSync(skillDir, { recursive: true });
@@ -130,7 +130,7 @@ function installGemini(): void {
       execSync('gemini mcp remove browser --scope user', { stdio: 'pipe' });
     } catch { /* ignore */ }
 
-    execSync('gemini mcp add --scope user browser npx --package=@yqi96/browser-pilot browser-pilot --launch', { stdio: 'inherit' });
+    execSync('gemini mcp add --scope user browser npx --package=@yqi96/browser-pilot@latest browser-pilot --launch', { stdio: 'inherit' });
     execSync(`gemini skills link ${path.join(skillsDir, 'browser')}`, { stdio: 'inherit' });
 
     console.log(green('  ✓ gemini — MCP server registered + skill linked'));
