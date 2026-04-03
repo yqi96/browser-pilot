@@ -4,6 +4,8 @@
 
 A lightweight MCP server that wraps [chrome-devtools-mcp](https://developer.chrome.com/blog/chrome-devtools-mcp) with automatic Chrome lifecycle management — works with Claude Code, Codex CLI, and Gemini CLI out of the box.
 
+![demo](assets/demo.png)
+
 ## Install
 
 ```bash
@@ -69,9 +71,7 @@ codex mcp add browser -- npx browser-pilot --launch
 ## Uninstall
 
 ```bash
-git clone https://github.com/yqi96/browser-pilot && cd browser-pilot
-npm install && npm run build
-node dist/uninstall.js --client all
+npx --package=@yqi96/browser-pilot browser-pilot-uninstall
 ```
 
 ## Development
