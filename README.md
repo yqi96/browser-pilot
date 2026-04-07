@@ -47,7 +47,7 @@ npx --package=@yqi96/browser-pilot@latest browser-pilot-install --client gemini
 |--------|--------|---------------|
 | Claude Code | ✅ Supported | `/browser` |
 | Codex CLI | ✅ Supported | `$browser` |
-| Gemini CLI | ⚡ Best-effort | `activate_skill("browser")` |
+| Gemini CLI | ✅ Supported | `activate_skill("browser")` |
 
 ## Uninstall
 
