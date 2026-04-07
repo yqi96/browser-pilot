@@ -35,6 +35,35 @@ function green(s: string) { return `\x1b[32m${s}\x1b[0m`; }
 function red(s: string)   { return `\x1b[31m${s}\x1b[0m`; }
 function yellow(s: string){ return `\x1b[33m${s}\x1b[0m`; }
 
+function checkVersions(): void {
+  // chrome-devtools-mcp requires: ^20.19.0 || ^22.12.0 || >=23
+  const [majorStr, minorStr, patchStr] = process.versions.node.split('.');
+  const major = parseInt(majorStr, 10);
+  const minor = parseInt(minorStr, 10);
+  const patch = parseInt(patchStr, 10);
+  const ok =
+    (major === 20 && (minor > 19 || (minor === 19 && patch >= 0))) ||
+    (major === 22 && (minor > 12 || (minor === 12 && patch >= 0))) ||
+    major >= 23;
+  if (!ok) {
+    console.error(red(`✗ Node.js ${process.versions.node} is not supported. Requires ^20.19.0, ^22.12.0, or >=23 (chrome-devtools-mcp constraint).`));
+    process.exit(1);
+  }
+
+  // npm >= 7
+  try {
+    const npmVersion = execSync('npm --version', { stdio: 'pipe' }).toString().trim();
+    const npmMajor = parseInt(npmVersion.split('.')[0], 10);
+    if (npmMajor < 7) {
+      console.error(red(`✗ npm ${npmVersion} is not supported. Requires npm 7 or later.`));
+      process.exit(1);
+    }
+  } catch {
+    console.error(red('✗ npm not found. Please install npm 7 or later.'));
+    process.exit(1);
+  }
+}
+
 const results: Record<string, boolean> = {};
 
 // ── Claude ──────────────────────────────────────────────────────────────────
@@ -144,6 +173,8 @@ function installGemini(): void {
 
 // ── Main ─────────────────────────────────────────────────────────────────────
 console.log('\nbrowser-pilot installer\n');
+
+checkVersions();
 
 for (const target of targets) {
   console.log(`Installing for ${target}…`);
