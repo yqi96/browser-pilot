@@ -18,7 +18,8 @@
     "dist",
     "skills",
     "assets",
-    "install.sh"
+    "install.sh",
+    "install.ps1"
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.28.0"

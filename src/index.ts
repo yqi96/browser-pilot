@@ -78,6 +78,8 @@ function findFreePort(): Promise<number> {
   });
 }
 
+const NPX = process.platform === "win32" ? "npx.cmd" : "npx";
+
 const CHROME_EXECUTABLES: Partial<Record<NodeJS.Platform, string>> = {
   darwin: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   linux: "google-chrome",
@@ -198,7 +200,7 @@ function buildUpstreamArgs(port: number, userDataDir?: string): string[] {
 
 async function createUpstreamClient(port: number, userDataDir?: string): Promise<Client> {
   const transport = new StdioClientTransport({
-    command: "npx",
+    command: NPX,
     args: buildUpstreamArgs(port, userDataDir),
     stderr: "pipe",
   });
@@ -244,7 +246,7 @@ const BROWSER_CLOSE_TOOL = {
  */
 async function probeUpstreamSchemas(): Promise<unknown[]> {
   const transport = new StdioClientTransport({
-    command: "npx",
+    command: NPX,
     args: ["-y", "chrome-devtools-mcp@latest", "--browserUrl", "http://127.0.0.1:1"],
     stderr: "pipe",
   });

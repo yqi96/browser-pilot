@@ -23,7 +23,8 @@ const targets = clientFlag === 'all' ? ['claude', 'codex', 'gemini'] : [clientFl
 
 function hasCommand(cmd: string): boolean {
   try {
-    execSync(`which ${cmd}`, { stdio: 'pipe' });
+    const checker = process.platform === 'win32' ? 'where' : 'which';
+    execSync(`${checker} ${cmd}`, { stdio: 'pipe' });
     return true;
   } catch {
     return false;
