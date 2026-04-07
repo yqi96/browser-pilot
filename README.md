@@ -14,6 +14,11 @@ A lightweight MCP server that wraps [chrome-devtools-mcp](https://developer.chro
 
 ![demo](assets/demo.png)
 
+## Requirements
+
+- Node.js `^20.19.0`, `^22.12.0`, or `>=23` (required by chrome-devtools-mcp)
+- npm `>=7`
+
 ## Install
 
 ```bash
