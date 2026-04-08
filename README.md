@@ -12,7 +12,7 @@ A lightweight MCP server that wraps [chrome-devtools-mcp](https://developer.chro
 - **Screenshot & visual analysis** — capture pages and let the AI reason about layout, content, or visual changes
 - **Scraping without APIs** — access any site a human can open, no API key required
 
-![demo](assets/demo.png)
+<video src="assets/demo.webm" controls width="100%"></video>
 
 ## Requirements
 
