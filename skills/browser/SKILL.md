@@ -12,9 +12,22 @@ You are operating a real Chrome browser via the `mcp__browser__*` tools. Follow 
 ## Core Workflow
 
 ### 0. Opening the browser
-You MUST call `mcp__browser__browser_open` before any other tools if the browser is not already open.
+You MUST call `mcp__browser__browser_open` before any other tools. Each call creates an independent Chrome instance and returns a `session_id`. You MUST pass this `session_id` as `_browser_session` to every subsequent browser tool call.
+
 ```
 mcp__browser__browser_open()
+→ "Browser opened. Session: <uuid>"
+```
+
+Then use the returned session ID for all subsequent calls:
+```
+mcp__browser__navigate_page(type="url", url="https://example.com", _browser_session="<uuid>")
+mcp__browser__take_screenshot(_browser_session="<uuid>")
+```
+
+Close the session when done:
+```
+mcp__browser__browser_close(session_id="<uuid>")
 ```
 
 ### Navigating to a known URL

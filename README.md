@@ -40,6 +40,24 @@ npx --package=@yqi96/browser-pilot@latest browser-pilot-install --client gemini
 - **Adds lifecycle tools** — `browser_open`, `browser_close`
 - **Proxies all chrome-devtools-mcp tools** transparently (navigate, click, screenshot, fill forms, …)
 - **Returns screenshots as base64** for direct multimodal AI processing
+- **Parallel-agent safe** — each agent gets its own isolated Chrome instance via session IDs
+
+## Parallel agents
+
+When multiple subagents run concurrently, each one calls `browser_open()` independently and gets back a unique `session_id`. Every subsequent browser tool call passes that ID via `_browser_session`, so agents never interfere with each other:
+
+```
+# Agent A                                    # Agent B (concurrent)
+browser_open()                               browser_open()
+→ Session: abc-123                           → Session: def-456
+
+navigate_page(url="...",                     navigate_page(url="...",
+  _browser_session="abc-123")                  _browser_session="def-456")
+
+browser_close(session_id="abc-123")          browser_close(session_id="def-456")
+```
+
+If Chrome is closed externally mid-session, the next tool call returns a clear error telling the agent to call `browser_open()` again — no manual cleanup needed.
 
 ## Supported clients
 
