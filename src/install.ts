@@ -108,13 +108,15 @@ function cleanCodexConfig(mcpName: string): void {
   const filtered: string[] = [];
   let skip = false;
 
+  const sectionPrefix = `[mcp_servers.${mcpName}.`;
   for (const line of lines) {
-    if (line.trim() === sectionHeader) {
-      skip = true; // start skipping this section
+    const trimmed = line.trim();
+    if (trimmed === sectionHeader || trimmed.startsWith(sectionPrefix)) {
+      skip = true; // start skipping this section (main table or any subtable)
       continue;
     }
-    if (skip && line.trim().startsWith('[')) {
-      skip = false; // new section starts — stop skipping
+    if (skip && trimmed.startsWith('[')) {
+      skip = false; // new unrelated section starts — stop skipping
     }
     if (!skip) filtered.push(line);
   }
