@@ -77,9 +77,43 @@ mcp__browser__wait_for(text=["Expected text on page"])
 - `mcp__browser__new_page(url="...")`
 - `mcp__browser__select_page(pageId=N)`
 
-## Human Handoff
+## Human Collaboration (Human-in-the-Loop)
 
-When blocked by login wall, CAPTCHA, or 2FA:
-- Tell the user exactly what action is needed.
-- Wait for completion in the real browser.
-- Resume automation afterward.
+**Key insight**: The browser session is shared — the user can see and interact with the same browser window in real time. This unlocks tasks that agents cannot do alone.
+
+### When to hand off to the user
+
+Pause and ask the user to act when you hit:
+- **Login walls** — credentials, SSO, OAuth flows
+- **CAPTCHAs / reCAPTCHA** — visual or audio challenges
+- **2FA / MFA** — OTP codes, authenticator apps, SMS verification
+- **Email / phone verification links** — click-to-confirm flows
+- **Payment forms** — credit card or banking credentials
+- **Biometric prompts** — fingerprint, Face ID dialogs
+- **Any sensitive credential input** — never type passwords on behalf of the user
+
+### How to hand off correctly
+
+1. **Take a screenshot first** so the user can see the current state.
+2. **Tell the user exactly what to do**, e.g.:
+   > "The browser is showing a login page. Please enter your credentials and click Sign In, then tell me when you're done."
+3. **Wait** — do not poll or retry. Just pause and wait for the user's reply.
+4. **Take a new screenshot** after the user signals completion to confirm the state.
+5. **Resume automation** from the new state.
+
+### Example hand-off prompts
+
+- "Please complete the login in the browser window, then tell me when you're signed in."
+- "A CAPTCHA appeared. Please solve it in the browser, then say 'done'."
+- "Check your email/phone for a verification code and enter it in the browser."
+- "Please approve the OAuth permission dialog, then tell me when it's done."
+
+### What this enables
+
+By combining agent automation with human assistance at auth/verification steps, you can complete tasks like:
+- Scraping or interacting with sites that require login
+- Automating workflows across authenticated SaaS tools
+- Multi-step processes that mix public and private content
+- Any site with anti-bot protections at the auth layer
+
+Never skip a human handoff to guess or fake credentials. Human collaboration is the correct pattern — agents handle what they can, humans handle what requires trust.
