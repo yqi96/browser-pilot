@@ -1,6 +1,6 @@
 {
   "name": "@yqi96/browser-pilot",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Browser MCP server for AI agents — auto-launches Chrome, proxies chrome-devtools-mcp tools",
   "type": "module",
   "bin": {
@@ -21,7 +21,6 @@
   "files": [
     "dist",
     "skills",
-    "assets",
     "install.sh",
     "install.ps1"
   ],
