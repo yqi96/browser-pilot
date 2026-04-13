@@ -63,6 +63,15 @@ mcp__browser__press_key(key="End")
 mcp__browser__wait_for(text=["Expected text on page"])
 ```
 
+### Downloading files
+For download tasks, prefer `wget` or `curl` once you have discovered the real file URL from the page, network activity, or page state.
+
+Only fall back to clicking a download button/link when direct download fails or the URL cannot be recovered.
+
+Be aware that click-driven downloads may:
+- auto-download into `~/Downloads`
+- stall on a browser-native or site-native confirmation dialog that requires human action
+
 ## Standard Loop
 
 1. **Open**: `mcp__browser__browser_open` (if needed)
